@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" role="img" aria-label="Pocket Check-in cat">
+<rect width="240" height="200" rx="41" fill="#f9d7ee"/><ellipse cx="118" cy="175" rx="74" ry="9" fill="#c693ce" opacity=".25"/>
+<path class="kitty-tail" d="M153 152c39 9 62-9 52-33-4-10-19-12-22-1" fill="none" stroke="#ae80d0" stroke-width="15" stroke-linecap="round"/>
+<ellipse cx="120" cy="139" rx="52" ry="36" fill="#bd93dc"/>
+<ellipse cx="120" cy="147" rx="30" ry="24" fill="#f9e6ff"/>
+<ellipse cx="91" cy="167" rx="18" ry="9" fill="#ae80d0"/>
+<ellipse cx="147" cy="167" rx="18" ry="9" fill="#ae80d0"/>
+<path d="M67 83 65 40q0-8 7-5l33 22m28 0 33-22q7-3 7 5l-2 43" fill="#bd93dc" stroke="#bd93dc" stroke-width="6" stroke-linejoin="round"/>
+<path d="m75 48 24 16-23 9m88-25-24 16 23 9" fill="#f5a9d1"/>
+<ellipse cx="120" cy="93" rx="63" ry="45" fill="#d7b6ee"/>
+<path d="m112 54 2 11m12-11-2 11" stroke="#b287d1" stroke-width="4" stroke-linecap="round"/>
+<g class="kitty-eyes" fill="#3e2854"><ellipse cx="96" cy="92" rx="5.5" ry="8"/><ellipse cx="144" cy="92" rx="5.5" ry="8"/></g>
+<g fill="#ef9fc8"><ellipse cx="86" cy="106" rx="10" ry="5"/><ellipse cx="154" cy="106" rx="10" ry="5"/></g>
+<path d="M116 103q4-4 8 0l-4 4Z" fill="#9e5d8c"/>
+<path d="M112 111q4 5 8-3 4 8 8 3" fill="none" stroke="#59406c" stroke-width="2.4" stroke-linecap="round"/>
+<path d="m68 96-15-4m15 11-16 2m120-9 15-4m-15 11 16 2" stroke="#866398" stroke-width="2.3" stroke-linecap="round"/>
+<path d="M120 136c-9-10-19 2 0 13 19-11 9-23 0-13Z" fill="#ee91c1"/>
+</svg>
