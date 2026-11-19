@@ -25,6 +25,11 @@ article,dialog{background:#fffafd;border-color:#eed7f1}.pink{background:#ffe6f2}
 @media(max-width:680px){.pet{width:172px;height:143px}}
 @media(prefers-reduced-motion:reduce){.pet svg,.kitty-tail,.kitty-eyes{animation:none}}
 .ios-emoji{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.22em;object-fit:contain}
+.snack-treat{position:fixed;top:0;left:0;width:28px;height:23px;display:grid;place-items:center;border:2px solid #8c4c44;border-radius:8px;background:#e9a278;color:#673a43;box-shadow:0 2px 4px #713e6540;font-size:14px;font-weight:800;line-height:1;pointer-events:none;z-index:5}
+.pet.feeding svg{animation-play-state:paused}
+.kitty-bite{opacity:0}
+.pet.feeding .kitty-bite{opacity:1}
+.pet.feeding .kitty-smile{opacity:0}
 </style>
 <main>
 <header><span class="brand">✿ Pocket Check-in</span><button id="settingsButton" type="button">Settings</button></header>
@@ -44,7 +49,8 @@ article,dialog{background:#fffafd;border-color:#eed7f1}.pink{background:#ffe6f2}
 <g class="kitty-eyes" fill="#3e2854"><ellipse cx="96" cy="92" rx="5.5" ry="8"/><ellipse cx="144" cy="92" rx="5.5" ry="8"/></g>
 <g fill="#ef9fc8"><ellipse cx="86" cy="106" rx="10" ry="5"/><ellipse cx="154" cy="106" rx="10" ry="5"/></g>
 <path d="M116 103q4-4 8 0l-4 4Z" fill="#9e5d8c"/>
-<path d="M112 111q4 5 8-3 4 8 8 3" fill="none" stroke="#59406c" stroke-width="2.4" stroke-linecap="round"/>
+<ellipse id="kittyMouth" class="kitty-bite" cx="120" cy="111" rx="6" ry="5" fill="#59406c"/>
+<path class="kitty-smile" d="M112 111q4 5 8-3 4 8 8 3" fill="none" stroke="#59406c" stroke-width="2.4" stroke-linecap="round"/>
 <path d="m68 96-15-4m15 11-16 2m120-9 15-4m-15 11 16 2" stroke="#866398" stroke-width="2.3" stroke-linecap="round"/>
 <path d="M120 136c-9-10-19 2 0 13 19-11 9-23 0-13Z" fill="#ee91c1"/>
 </svg></button><p id="petSpeech" aria-live="polite">Pickles is happy you’re here.</p><button id="snack" type="button">Give a snack</button></div>
@@ -162,7 +168,45 @@ buttons('letters', letters, entry => entry[0], entry => {
 });
 byId('start').onclick = () => byId('moods').firstElementChild.focus();
 byId('pet').onclick = () => react('does a little happy dance.');
-byId('snack').onclick = () => react('says thanks for the snack!');
+byId('snack').onclick = async () => {
+  const snackButton = byId('snack');
+  if (snackButton.disabled) return;
+
+  const pet = byId('pet');
+  const mouth = byId('kittyMouth');
+  snackButton.disabled = true;
+  pet.classList.remove('pop');
+  pet.classList.add('feeding');
+
+  const treat = document.createElement('span');
+  treat.className = 'snack-treat';
+  treat.setAttribute('aria-hidden', 'true');
+  treat.textContent = '♥';
+  document.body.append(treat);
+
+  try {
+    const buttonBox = snackButton.getBoundingClientRect();
+    const mouthBox = mouth.getBoundingClientRect();
+    const startX = buttonBox.left + buttonBox.width / 2 - treat.offsetWidth / 2;
+    const startY = buttonBox.top - treat.offsetHeight / 2;
+    const endX = mouthBox.left + mouthBox.width / 2 - treat.offsetWidth / 2;
+    const endY = mouthBox.top + mouthBox.height / 2 - treat.offsetHeight / 2;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const frames = reducedMotion
+      ? [{transform: `translate(${endX}px,${endY}px)`, opacity: 1},
+         {transform: `translate(${endX}px,${endY}px)`, opacity: 0}]
+      : [{transform: `translate(${startX}px,${startY}px) scale(.35)`, opacity: 0},
+         {transform: `translate(${startX + 35}px,${(startY + endY) / 2}px) rotate(20deg)`, opacity: 1, offset: .45},
+         {transform: `translate(${endX}px,${endY}px) scale(.8)`, opacity: 1, offset: .83},
+         {transform: `translate(${endX}px,${endY}px) scale(.1)`, opacity: 0}];
+    await treat.animate(frames, {duration: reducedMotion ? 240 : 750, easing: 'ease-out', fill: 'forwards'}).finished;
+  } finally {
+    treat.remove();
+    pet.classList.remove('feeding');
+    snackButton.disabled = false;
+    react('takes a bite. Crunch, crunch!');
+  }
+};
 byId('send').onclick = () => {
   const message = [mood?.[1], selectedSupport?.[1], byId('note').value.trim()].filter(Boolean).join(' ');
   if (!message) {
