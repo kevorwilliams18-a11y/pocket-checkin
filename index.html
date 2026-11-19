@@ -30,11 +30,30 @@ article,dialog{background:#fffafd;border-color:#eed7f1}.pink{background:#ffe6f2}
 .kitty-bite{opacity:0}
 .pet.feeding .kitty-bite{opacity:1}
 .pet.feeding .kitty-smile{opacity:0}
+
+body{background:radial-gradient(ellipse at 0 0,#ffdeee 0,transparent 45%),radial-gradient(ellipse at 100% 20%,#e9d9ff 0,transparent 47%),#fff5fa}
+header{gap:12px;flex-wrap:wrap}header nav{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+header nav a{color:#613779;text-decoration:none;padding:8px 12px;border-radius:16px;font-weight:700}
+header nav a[aria-current=page],header nav a:hover{background:#f1dafa}
+.hero{position:relative;isolation:isolate;background:linear-gradient(125deg,#fbd8eb,#e8d8fc);overflow:hidden}
+.hero::before,.hero::after{content:'✿';position:absolute;z-index:-1;line-height:1;color:#bc83ce55;font-size:190px;pointer-events:none}
+.hero::before{top:-80px;right:-20px;transform:rotate(20deg)}
+.hero::after{bottom:-120px;left:-35px;color:#fff9;font-size:255px}
+h1,h2{font-family:Georgia,serif}h1{letter-spacing:-.055em}h2{color:#56316c}
+article{box-shadow:0 6px 20px #8b4f9d12}
+.brand{display:flex;gap:7px;align-items:center}
+.brand span{font-size:1.4em;color:#a94783}
+.petal-trim{color:#9c4f97;letter-spacing:.35em;margin-bottom:10px}
+.planner-grid{grid-template-columns:1fr 1.2fr}
+.planner-item{border:1px solid #efd9ed;background:#fff7fc;border-radius:16px;padding:14px;margin-top:10px;overflow-wrap:anywhere}
+.planner-item h3{margin:0;color:#56316c}.planner-item p{white-space:pre-wrap}.planner-item a{display:inline-block;color:#613779;margin-bottom:8px}
+[hidden]{display:none!important}
+@media(max-width:680px){.planner-grid{grid-template-columns:1fr}}
 </style>
 <main>
-<header><span class="brand">✿ Pocket Check-in</span><button id="settingsButton" type="button">Settings</button></header>
+<header><span class="brand"><span aria-hidden="true">✿</span> Pocket Check-in</span><nav aria-label="Main"><a href="./" aria-current="page">Check-in</a><a href="./study.html">Study planner</a></nav><button id="settingsButton" type="button">Settings</button></header>
 <section class="hero">
-<div><h1>Hey, how are<br> you, really?</h1><p>A little space to check in, ask for what you need, or drop by to say hi.</p><button id="start" class="primary" type="button">Check in</button></div>
+<div><div class="petal-trim" aria-hidden="true">✿ ❀ ✿</div><h1>Hey, how are<br> you, really?</h1><p>A little space to check in, ask for what you need, or drop by to say hi.</p><button id="start" class="primary" type="button">Check in</button></div>
 <div class="pet-box"><button id="pet" class="pet" type="button" aria-label="Pet your pocket cat"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" aria-hidden="true">
 <ellipse cx="118" cy="175" rx="74" ry="9" fill="#c693ce" opacity=".25"/>
 <path class="kitty-tail" d="M153 152c39 9 62-9 52-33-4-10-19-12-22-1" fill="none" stroke="#ae80d0" stroke-width="15" stroke-linecap="round"/>
