@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pocket Short Cakes Widget</title><style>body{margin:0;background:#fff1f9;color:#4b285d;font:16px/1.5 system-ui,sans-serif}main{max-width:610px;margin:0 auto;padding:28px 18px}article{background:linear-gradient(130deg,#ffdeee,#e9d9ff);padding:24px;border-radius:24px}h1{margin:0;font:700 2rem Georgia,serif}li+li{margin-top:8px}button{background:#693e85;color:white;border:0;border-radius:13px;padding:12px 16px;font:inherit;font-weight:700}textarea{box-sizing:border-box;width:100%;height:170px;padding:10px;border-radius:12px;border:1px solid #ceabd9;margin:10px 0}a{color:#5a3472}</style><main><article><h1>Pocket Short Cakes widget</h1><p>Put Pickles and your daily note on your iPhone Home Screen.</p><ol><li>Install <a href="https://apps.apple.com/app/scriptable/id1405459188">Scriptable</a>, then tap <strong>Copy widget script</strong> below.</li><li>In Scriptable, tap <strong>+</strong>, paste the script, and name it <strong>Pocket Short Cakes</strong>. Tap <strong>Done</strong>.</li><li>Add a <strong>Scriptable</strong> widget to your Home Screen. Choose <strong>medium</strong> to show the full note.</li><li>Press and hold the widget, tap <strong>Edit Widget</strong>, then select <strong>Pocket Short Cakes</strong> under <strong>Script</strong>.</li></ol><button id="copy" type="button">Copy widget script</button> <span id="status" role="status"></span><textarea id="code" readonly aria-label="Widget script" spellcheck="false">// Variables used by Scriptable.
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Pocket Short Cakes Widget</title><style>body{margin:0;background:#fff1f9;color:#4b285d;font:16px/1.5 system-ui,sans-serif}main{max-width:610px;margin:0 auto;padding:28px 18px}article{background:linear-gradient(130deg,#ffdeee,#e9d9ff);padding:24px;border-radius:24px}h1{margin:0;font:700 2rem Georgia,serif}li+li{margin-top:8px}button{background:#693e85;color:white;border:0;border-radius:13px;padding:12px 16px;font:inherit;font-weight:700}textarea{box-sizing:border-box;width:100%;height:170px;padding:10px;border-radius:12px;border:1px solid #ceabd9;margin:10px 0}a{color:#5a3472}</style><main><article><h1>Pocket Short Cakes widget</h1><p>Put Pickles and your daily note on your iPhone Home Screen.</p><ol><li>Install <a href="https://apps.apple.com/app/scriptable/id1405459188">Scriptable</a>, then tap <strong>Copy widget script</strong> below.</li><li>In Scriptable, tap <strong>+</strong>, paste the script, and name it <strong>Pocket Short Cakes</strong>. Tap <strong>Done</strong>. If you already installed the widget, replace your old script with this version.</li><li>Add a <strong>Scriptable</strong> widget to your Home Screen. Choose <strong>medium</strong> to show the full note.</li><li>Press and hold the widget, tap <strong>Edit Widget</strong>, then select <strong>Pocket Short Cakes</strong> under <strong>Script</strong>.</li><li>On the main site, tap <strong>Copy widget pairing code</strong>. Back in <strong>Edit Widget</strong>, paste it into <strong>Parameter</strong>. Keep the code private.</li></ol><button id="copy" type="button">Copy widget script</button> <span id="status" role="status"></span><textarea id="code" readonly aria-label="Widget script" spellcheck="false">// Variables used by Scriptable.
 // icon-color: pink; icon-glyph: heart;
 const site = 'https://kevorwilliams18-a11y.github.io/pocket-checkin/';
 const notes = [
@@ -63,6 +63,21 @@ const now = new Date();
 const day = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
 const [compliment, encouragement] = notes[(day % notes.length + notes.length) % notes.length];
 
+let latestReply = '';
+const pairingCode = (args.widgetParameter || '').trim();
+const paired = /^[a-f0-9]{64}$/.test(pairingCode);
+if (paired) {
+  try {
+    const request = new Request('https://pocket-checkin.kevorwilliams18.workers.dev/api/inbox');
+    request.timeoutInterval = 8;
+    request.headers = {'X-Pocket-Key': pairingCode};
+    const inbox = await request.loadJSON();
+    if (request.response.statusCode === 200 &amp;&amp; Array.isArray(inbox.messages)) {
+      latestReply = inbox.messages.find(item => typeof item.reply === 'string' &amp;&amp; item.reply)?.reply || '';
+    }
+  } catch {}
+}
+
 function drawPickles() {
   const art = new DrawContext();
   art.size = new Size(160, 140);
@@ -116,12 +131,12 @@ background.colors = [new Color('#ffdeee'), new Color('#e9d9ff')];
 background.locations = [0,1];
 widget.backgroundGradient = background;
 widget.url = site;
-widget.refreshAfterDate = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 5);
+widget.refreshAfterDate = paired ? new Date(Date.now() + 30 * 60 * 1000) : new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 5);
 widget.setPadding(12, 12, 12, 12);
 
 const family = config.widgetFamily || 'medium';
 const small = family === 'small';
-const title = widget.addText('✿  Pocket Short Cakes');
+const title = widget.addText(latestReply ? '✿  Message from Kevor' : '✿  Pocket Short Cakes');
 title.font = Font.boldSystemFont(11);
 title.textColor = new Color('#7c477e');
 widget.addSpacer(4);
@@ -137,12 +152,12 @@ row.addSpacer(small ? 3 : 9);
 
 const copy = row.addStack();
 copy.layoutVertically();
-const message = copy.addText(compliment);
+const message = copy.addText(latestReply || compliment);
 message.font = Font.boldSystemFont(small ? 12 : 14);
 message.textColor = new Color('#4b285d');
-message.lineLimit = small ? 4 : 3;
+message.lineLimit = latestReply ? (small ? 4 : 6) : (small ? 4 : 3);
 message.minimumScaleFactor = 0.74;
-if (!small) {
+if (!small &amp;&amp; !latestReply) {
   copy.addSpacer(4);
   const tip = copy.addText(encouragement);
   tip.font = Font.systemFont(11);
