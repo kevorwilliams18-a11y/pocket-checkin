@@ -81,7 +81,7 @@ async function push(endpoint, env) {
   return response.ok;
 }
 const clean = (value, limit) => typeof value === 'string' ? value.trim().slice(0,limit) : '';
-export default {
+const handler = {
   async fetch(request, env) {
     const url = new URL(request.url);
     const admin = url.pathname === '/admin' || url.pathname.startsWith('/admin/');
@@ -105,7 +105,7 @@ export default {
         const {results} = await statement.all();
         return json({owner:role==='owner',messages:results,publicKey:role==='guest'?env.VAPID_PUBLIC_KEY:null});
       }
-      if (request.method !== 'POST' || request.headers.get('Origin') !== url.origin ||
+      if (request.method !== 'POST' || (request.headers.get('Origin') !== url.origin && !(route === '/api/checkin' && !admin && request.headers.get('Origin') === publicSite)) ||
           !request.headers.get('Content-Type')?.startsWith('application/json')) return json({error:'Not found'},404);
       const body = await request.text();
       if (body.length > 4096) return json({error:'Request too large'},413);
@@ -132,5 +132,25 @@ export default {
       }
       return json({error:'Not found'},404);
     } catch { return json({error:'Request could not be completed'},500); }
+  }
+};
+const publicSite = 'https://kevorwilliams18-a11y.github.io';
+export default {
+  async fetch(request, env) {
+    const url = new URL(request.url);
+    const origin = request.headers.get('Origin');
+    const publicApi = ['/api/inbox','/api/checkin'].includes(url.pathname);
+    if (!publicApi || origin !== publicSite) return handler.fetch(request,env);
+    const cors = {
+      'Access-Control-Allow-Origin': publicSite,
+      'Access-Control-Allow-Methods':'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers':'X-Pocket-Key, Content-Type',
+      'Vary':'Origin'
+    };
+    if (request.method === 'OPTIONS') return new Response(null,{status:204,headers:cors});
+    const response = await handler.fetch(request,env);
+    const revised = new Response(response.body,response);
+    for (const [name,value] of Object.entries(cors)) revised.headers.set(name,value);
+    return revised;
   }
 };
