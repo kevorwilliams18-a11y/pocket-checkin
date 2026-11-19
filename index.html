@@ -8,50 +8,50 @@
 *{box-sizing:border-box}body{margin:0;background:#f5efff;color:#27203c;font:16px/1.5 system-ui,sans-serif}main{max-width:1000px;margin:auto;padding:28px 20px 45px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;font-weight:750}.brand{color:#533294}h1,h2,p{margin:0}h1{font-size:clamp(38px,6vw,64px);line-height:1;letter-spacing:-.065em}h2{font-size:22px;letter-spacing:-.035em}p{color:#5e5274}.hero{background:#e4d5ff;border-radius:32px;padding:32px;display:grid;grid-template-columns:1fr .85fr;align-items:center;gap:20px}.hero p{margin:14px 0}.pet-box{text-align:center}.pet{display:block;margin:auto auto 6px;background:#f9f3ff;border:0;width:164px;height:146px;border-radius:48% 48% 42% 42%;font-size:80px;box-shadow:0 14px 0 #cbb5f1}.pet.pop{animation:hop .4s ease}@keyframes hop{45%{transform:translateY(-14px) rotate(-8deg)}}.pet-box p{margin:14px 0 8px;min-height:24px}.grid{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:18px}.side{display:grid;gap:18px;align-content:start}article,dialog{border:1px solid #e6d9f7;background:#fff;border-radius:24px;padding:24px}article p{margin:4px 0 12px}fieldset{border:0;padding:0;margin:18px 0}legend,label{font-weight:700}legend{margin-bottom:8px}.choices{display:flex;flex-wrap:wrap;gap:8px}button,input,select,textarea{font:inherit}button{cursor:pointer;border:1px solid #ddd0ef;background:#faf6ff;color:inherit;border-radius:15px;padding:9px 13px;font-weight:650}button:hover{background:#ede2ff}button[aria-pressed=true]{background:#e7d9ff;border-color:#7951c1}.primary{background:#55329a;color:#fff;border-color:#55329a}.primary:hover{background:#402475}textarea,input,select{display:block;width:100%;border:1px solid #cdbde1;background:#fcfaff;color:inherit;border-radius:12px;padding:9px 12px;margin:5px 0 13px}textarea{resize:vertical;min-height:76px}.pink{background:#fff0f5}.small{font-size:14px}.status{margin-top:10px}dialog{width:min(440px,calc(100% - 32px));color:inherit}dialog::backdrop{background:#28174188}.note{margin-top:14px;padding:12px;background:#fff;border-radius:12px}audio{width:100%;margin:8px 0}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #764fc0;outline-offset:3px}@media(max-width:680px){main{padding:16px 14px 30px}.grid,.hero{grid-template-columns:1fr}.hero{padding:24px}.pet-box{margin-top:7px}.pet{width:130px;height:114px;font-size:62px}article{padding:20px}}@media(prefers-reduced-motion:reduce){.pet.pop{animation:none}}
 </style>
 <main>
-<header><span class="brand">? Pocket Check-in</span><button id="settingsButton" type="button">Settings</button></header>
+<header><span class="brand">✿ Pocket Check-in</span><button id="settingsButton" type="button">Settings</button></header>
 <section class="hero">
 <div><h1>Hey, how are<br> you, really?</h1><p>A little space to check in, ask for what you need, or drop by to say hi.</p><button id="start" class="primary" type="button">Check in</button></div>
-<div class="pet-box"><button id="pet" class="pet" type="button" aria-label="Pet your pocket companion">??</button><p id="petSpeech" aria-live="polite">Pickles is happy you're here.</p><button id="snack" type="button">Give a snack</button></div>
+<div class="pet-box"><button id="pet" class="pet" type="button" aria-label="Pet your pocket companion">🐸</button><p id="petSpeech" aria-live="polite">Pickles is happy you’re here.</p><button id="snack" type="button">Give a snack</button></div>
 </section>
 <div class="grid">
-<article><h2>How's your day going?</h2>
+<article><h2>How’s your day going?</h2>
 <fieldset><legend>Pick a mood</legend><div id="moods" class="choices"></div></fieldset>
 <fieldset><legend>What would feel good right now?</legend><div id="support" class="choices"></div></fieldset>
-<label for="note">Anything else? <span class="small">(optional)</span></label><textarea id="note" maxlength="500" placeholder="A little more about today."></textarea>
+<label for="note">Anything else? <span class="small">(optional)</span></label><textarea id="note" maxlength="500" placeholder="A little more about today…"></textarea>
 <button id="send" class="primary" type="button">Open check-in in WhatsApp</button><p class="status small" id="status" role="status">You choose what to share. You can edit your message in WhatsApp before sending.</p>
 </article>
 <aside class="side"><article class="pink"><h2>Kevor?</h2><p>Send a quick message.</p><div class="choices" id="shortcuts"></div></article>
-<article><h2>Little things from me ??</h2><p>Open a note whenever you feel like it.</p><div class="choices" id="letters"></div><div class="note" id="letter" aria-live="polite" hidden></div></article></aside>
+<article><h2>Little things from me 💌</h2><p>Open a note whenever you feel like it.</p><div class="choices" id="letters"></div><div class="note" id="letter" aria-live="polite" hidden></div></article></aside>
 </div>
 </main>
-<dialog id="settings"><form id="preferences"><h2>Make it yours</h2><label for="species">Pocket pet</label><select id="species"><option value="??">Frog</option><option value="??">Cat</option><option value="??">Cloud</option></select>
+<dialog id="settings"><form id="preferences"><h2>Make it yours</h2><label for="species">Pocket pet</label><select id="species"><option value="🐸">Frog</option><option value="🐱">Cat</option><option value="☁️">Cloud</option></select>
 <label for="petName">Pet name</label><input id="petName" maxlength="24" placeholder="Pickles">
-<label for="phone">Kevor's WhatsApp number</label><input id="phone" type="tel" placeholder="Include country code" maxlength="25" aria-describedby="phoneHelp"><p id="phoneHelp" class="small">Save a number on this device, or choose Kevor in WhatsApp.</p>
+<label for="phone">Kevor’s WhatsApp number</label><input id="phone" type="tel" placeholder="Include country code" maxlength="25" aria-describedby="phoneHelp"><p id="phoneHelp" class="small">Save a number on this device, or choose Kevor in WhatsApp.</p>
 <p class="small" id="phoneError" role="alert"></p><div class="choices"><button class="primary">Save settings</button><button type="button" id="close">Cancel</button></div></form></dialog>
 <script>
 const byId = id => document.getElementById(id);
 const moods = [
-  ['?? Good', 'I'm having a good day.', 'throws a tiny party! ??'],
-  ['?? Okay', 'I'm doing okay today.', 'is here for a little company.'],
-  ['?? Tired', 'I'm tired today.', 'pulls up a tiny blanket.'],
-  ['????? Overwhelmed', 'I'm feeling overwhelmed today.', 'sits beside you for a minute.'],
-  ['?? Unsure', 'I'm still figuring out how I feel.', 'is happy to just hang out.']
+  ['😊 Good', 'I’m having a good day.', 'throws a tiny party! 🎉'],
+  ['😌 Okay', 'I’m doing okay today.', 'is here for a little company.'],
+  ['😴 Tired', 'I’m tired today.', 'pulls up a tiny blanket.'],
+  ['😵‍💫 Overwhelmed', 'I’m feeling overwhelmed today.', 'sits beside you for a minute.'],
+  ['🤍 Unsure', 'I’m still figuring out how I feel.', 'is happy to just hang out.']
 ];
 const support = [
   ['Let me vent', 'Can I vent for a bit?'],
-  ['Make me laugh', 'Send me something funny when you can ??'],
+  ['Make me laugh', 'Send me something funny when you can 😂'],
   ['Call me later', 'Can you call me later?'],
-  ['Give me space', 'I'd like a little space right now.'],
+  ['Give me space', 'I’d like a little space right now.'],
   ['Celebrate with me', 'I have good news to share!']
 ];
-const shortcuts = ['You free for a call?', 'Send me a voice note?', 'Distract me for five minutes ??'];
+const shortcuts = ['You free for a call?', 'Send me a voice note?', 'Distract me for five minutes 😂'];
 const letters = [
-  ['Rough day', 'Hey, if today felt like a lot, take a minute for yourself. I'm around if you want company.'],
+  ['Rough day', 'Hey, if today felt like a lot, take a minute for yourself. I’m around if you want company.'],
   ['Make me laugh', 'Pickles has applied for a job as my assistant. The interview was just three croaks and a demand for snacks.'],
-  ['Good news', 'I hope you're giving yourself some credit. I want to hear the whole story when you feel like telling it.']
+  ['Good news', 'I hope you’re giving yourself some credit. I want to hear the whole story when you feel like telling it.']
 ];
 // Add a recording URL as the third item in a letter to show its audio player.
-const defaults = {species:'??', name:'Pickles', phone:''};
+const defaults = {species:'🐸', name:'Pickles', phone:''};
 let preferences = {...defaults};
 try { preferences = {...defaults, ...JSON.parse(localStorage.getItem('pocket-checkin'))}; } catch {}
 let mood = null;
@@ -86,7 +86,7 @@ function share(message) {
 }
 buttons('moods', moods, entry => entry[0], entry => {
   mood = entry;
-  react(entry ? entry[2] : 'is happy you're here.');
+  react(entry ? entry[2] : 'is happy you’re here.');
 }, true);
 buttons('support', support, entry => entry[0], entry => { selectedSupport = entry; }, true);
 buttons('shortcuts', shortcuts, entry => entry, share);
@@ -110,7 +110,7 @@ byId('send').onclick = () => {
     byId('status').textContent = 'Pick a mood, choose what you need, or add a note first.';
     return;
   }
-  byId('status').textContent = 'Choose Kevor if prompted, then send when you're ready.';
+  byId('status').textContent = 'Choose Kevor if prompted, then send when you’re ready.';
   share(message);
 };
 const settings = byId('settings');
@@ -133,11 +133,10 @@ byId('preferences').onsubmit = event => {
   preferences = {species:byId('species').value, name:byId('petName').value.trim() || defaults.name, phone};
   try { localStorage.setItem('pocket-checkin', JSON.stringify(preferences)); } catch {}
   byId('pet').textContent = preferences.species;
-  react('is happy you're here.');
+  react('is happy you’re here.');
   settings.close();
 };
 byId('pet').textContent = preferences.species;
-byId('petSpeech').textContent = preferences.name + ' is happy you're here.';
+byId('petSpeech').textContent = preferences.name + ' is happy you’re here.';
 </script>
 </html>
-
