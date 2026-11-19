@@ -24,6 +24,7 @@ article,dialog{background:#fffafd;border-color:#eed7f1}.pink{background:#ffe6f2}
 @keyframes kitty-blink{0%,43%,49%,100%{transform:scaleY(1)}46%{transform:scaleY(.12)}}
 @media(max-width:680px){.pet{width:172px;height:143px}}
 @media(prefers-reduced-motion:reduce){.pet svg,.kitty-tail,.kitty-eyes{animation:none}}
+.ios-emoji{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.22em;object-fit:contain}
 </style>
 <main>
 <header><span class="brand">✿ Pocket Check-in</span><button id="settingsButton" type="button">Settings</button></header>
@@ -56,7 +57,7 @@ article,dialog{background:#fffafd;border-color:#eed7f1}.pink{background:#ffe6f2}
 <button id="send" class="primary" type="button">Open check-in in WhatsApp</button><p class="status small" id="status" role="status">You choose what to share. You can edit your message in WhatsApp before sending.</p>
 </article>
 <aside class="side"><article class="pink"><h2>Kevor?</h2><p>Send a quick message.</p><div class="choices" id="shortcuts"></div></article>
-<article><h2>Little things from me 💌</h2><p>Open a note whenever you feel like it.</p><div class="choices" id="letters"></div><div class="note" id="letter" aria-live="polite" hidden></div></article></aside>
+<article><h2>Little things from me <span id="letterEmoji"></span></h2><p>Open a note whenever you feel like it.</p><div class="choices" id="letters"></div><div class="note" id="letter" aria-live="polite" hidden></div></article></aside>
 </div>
 </main>
 <dialog id="settings"><form id="preferences"><h2>Make it yours</h2><p class="small">To keep Pocket Check-in handy, look for Add to Home Screen or Install app in your browser menu.</p>
@@ -65,6 +66,29 @@ article,dialog{background:#fffafd;border-color:#eed7f1}.pink{background:#ffe6f2}
 <p class="small" id="phoneError" role="alert"></p><div class="choices"><button class="primary">Save settings</button><button type="button" id="close">Cancel</button></div></form></dialog>
 <script>
 const byId = id => document.getElementById(id);
+const appleEmojiBase = 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@16.0.0/img/apple/64/';
+const siteEmoji = /(😵‍💫|[😊😌😴🤍😂🎉💌])/gu;
+
+function renderEmojiText(element, value) {
+  element.replaceChildren();
+  for (const [index, part] of value.split(siteEmoji).entries()) {
+    if (index % 2 === 0) {
+      element.append(part);
+      continue;
+    }
+
+    const image = document.createElement('img');
+    const filename = Array.from(part, character => character.codePointAt(0).toString(16)).join('-');
+    image.className = 'ios-emoji';
+    image.alt = '';
+    image.addEventListener('error', () => image.replaceWith(part), { once: true });
+    image.src = appleEmojiBase + filename + '.png';
+    element.append(image);
+  }
+}
+
+renderEmojiText(byId('letterEmoji'), '💌');
+
 const moods = [
   ['😊 Good', 'I’m having a good day.', 'throws a tiny party! 🎉'],
   ['😌 Okay', 'I’m doing okay today.', 'is here for a little company.'],
@@ -95,7 +119,7 @@ function buttons(id, values, label, onClick, toggle = false) {
   for (const value of values) {
     const button = document.createElement('button');
     button.type = 'button';
-    button.textContent = label(value);
+    renderEmojiText(button, label(value));
     if (toggle) button.setAttribute('aria-pressed', 'false');
     button.addEventListener('click', () => {
       const alreadySelected = toggle && button.getAttribute('aria-pressed') === 'true';
@@ -109,7 +133,7 @@ function buttons(id, values, label, onClick, toggle = false) {
 }
 function react(message) {
   const pet = byId('pet');
-  byId('petSpeech').textContent = preferences.name + ' ' + message;
+  renderEmojiText(byId('petSpeech'), preferences.name + ' ' + message);
   pet.classList.remove('pop');
   void pet.offsetWidth;
   pet.classList.add('pop');
