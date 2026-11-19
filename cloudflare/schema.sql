@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS checkins (
+  id INTEGER PRIMARY KEY,
+  mood TEXT NOT NULL,
+  support TEXT NOT NULL,
+  note TEXT NOT NULL,
+  reply TEXT
+);
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id INTEGER PRIMARY KEY CHECK (id=1),
+  endpoint TEXT NOT NULL
+);
