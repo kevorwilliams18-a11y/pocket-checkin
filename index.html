@@ -113,16 +113,15 @@ article{box-shadow:0 6px 20px #8b4f9d12}
 <fieldset><legend>Pick a mood</legend><div id="moods" class="choices"></div></fieldset>
 <fieldset><legend>What would feel good right now?</legend><div id="support" class="choices"></div></fieldset>
 <label for="note">Anything else? <span class="small">(optional)</span></label><textarea id="note" maxlength="500" placeholder="A little more about today…"></textarea>
-<button id="send" class="primary" type="button">Open check-in in WhatsApp</button><p class="status small" id="status" role="status">You choose what to share. You can edit your message in WhatsApp before sending.</p>
+<button id="send" class="primary" type="button">Send to Kevor</button><p class="status small" id="status" role="status">Only the check-in you send is shared.</p>
 </article>
-<aside class="side"><article class="pink"><h2>Kevor?</h2><p>Send a quick message.</p><div class="choices" id="shortcuts"></div></article>
+<aside class="side"><article class="pink"><h2>Messages from Kevor</h2><p id="latestReply" aria-live="polite">Your latest reply will show here.</p><div class="choices"><button id="refreshReplies" type="button">Refresh messages</button><button id="copyWidgetKey" type="button">Copy widget pairing code</button></div><p class="small" id="inboxStatus" role="status"></p><a href="./widget.html">Set up the iPhone widget</a></article>
 <article><h2>Little things from me <span id="letterEmoji"></span></h2><p>Open a note whenever you feel like it.</p><div class="choices" id="letters"></div><div class="note" id="letter" aria-live="polite" hidden></div></article></aside>
 </div>
 </main>
 <dialog id="settings"><form id="preferences"><h2>Make it yours</h2><p class="small">To keep Pocket Short Cakes handy, look for Add to Home Screen or Install app in your browser menu.</p>
 <label for="petName">Pet name</label><input id="petName" maxlength="24" placeholder="Pickles">
-<label for="phone">Kevor’s WhatsApp number</label><input id="phone" type="tel" placeholder="Include country code" maxlength="25" aria-describedby="phoneHelp"><p id="phoneHelp" class="small">Save a number on this device, or choose Kevor in WhatsApp.</p>
-<p class="small" id="phoneError" role="alert"></p><div class="choices"><button class="primary">Save settings</button><button type="button" id="close">Cancel</button></div></form></dialog>
+<div class="choices"><button class="primary">Save settings</button><button type="button" id="close">Cancel</button></div></form></dialog>
 <script>
 const byId = id => document.getElementById(id);
 const appleEmojiBase = 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple@16.0.0/img/apple/64/';
@@ -234,14 +233,13 @@ const support = [
   ['Give me space', 'I’d like a little space right now.'],
   ['Celebrate with me', 'I have good news to share!']
 ];
-const shortcuts = ['You free for a call?', 'Send me a voice note?', 'Distract me for five minutes 😂'];
 const letters = [
   ['Rough day', 'Hey, if today felt like a lot, take a minute for yourself. I’m around if you want company.'],
   ['Make me laugh', 'The cat applied to be my assistant. So far, the job is mostly knocking things off my desk and demanding snacks.'],
   ['Good news', 'I hope you’re giving yourself some credit. I want to hear the whole story when you feel like telling it.']
 ];
 // Add a recording URL as the third item in a letter to show its audio player.
-const defaults = {name:'Pickles', phone:''};
+const defaults = {name:'Pickles'};
 let preferences = {...defaults};
 try { preferences = {...defaults, ...JSON.parse(localStorage.getItem('pocket-checkin'))}; } catch {}
 let mood = null;
@@ -269,17 +267,12 @@ function react(message) {
   void pet.offsetWidth;
   pet.classList.add('pop');
 }
-function share(message) {
-  const url = new URL('https://wa.me/' + preferences.phone);
-  url.searchParams.set('text', message);
-  window.open(url, '_blank', 'noopener,noreferrer');
-}
+
 buttons('moods', moods, entry => entry[0], entry => {
   mood = entry;
   react(entry ? entry[2] : 'is happy you’re here.');
 }, true);
 buttons('support', support, entry => entry[0], entry => { selectedSupport = entry; }, true);
-buttons('shortcuts', shortcuts, entry => entry, share);
 buttons('letters', letters, entry => entry[0], entry => {
   const panel = byId('letter');
   panel.hidden = false;
@@ -332,32 +325,65 @@ byId('snack').onclick = async () => {
     react('takes a bite. Crunch, crunch!');
   }
 };
-byId('send').onclick = () => {
-  const message = [mood?.[1], selectedSupport?.[1], byId('note').value.trim()].filter(Boolean).join(' ');
-  if (!message) {
-    byId('status').textContent = 'Pick a mood, choose what you need, or add a note first.';
+const inboxUrl = 'https://pocket-checkin.kevorwilliams18.workers.dev/api/';
+function getInboxKey() {
+  const storageKey = 'pocket-message-key-v1';
+  let key = localStorage.getItem(storageKey);
+  if (!key) {
+    key = Array.from(crypto.getRandomValues(new Uint8Array(32)), byte => byte.toString(16).padStart(2,'0')).join('');
+    localStorage.setItem(storageKey,key);
+  }
+  return key;
+}
+async function inboxRequest(route, data) {
+  const headers = {'X-Pocket-Key':getInboxKey()};
+  if (data) headers['Content-Type'] = 'application/json';
+  const response = await fetch(inboxUrl+route,{headers,method:data?'POST':'GET',body:data?JSON.stringify(data):undefined});
+  if (!response.ok) throw Error('Inbox unavailable');
+  return response.json();
+}
+async function refreshReplies() {
+  const status = byId('inboxStatus');
+  try {
+    const data = await inboxRequest('inbox');
+    if (!Array.isArray(data.messages)) throw Error('Inbox unavailable');
+    byId('latestReply').textContent = data.messages.find(item => item.reply)?.reply || 'No replies yet.';
+    status.textContent = '';
+  } catch { status.textContent = 'The inbox is unavailable right now.'; }
+}
+byId('refreshReplies').onclick = refreshReplies;
+byId('copyWidgetKey').onclick = async () => {
+  try {
+    await navigator.clipboard.writeText(getInboxKey());
+    byId('inboxStatus').textContent = 'Copied. Paste this into the Scriptable widget’s Parameter field. Keep the code private.';
+  } catch { byId('inboxStatus').textContent = 'Could not copy the pairing code. Open this page directly in Safari and try again.'; }
+};
+byId('send').onclick = async () => {
+  const button = byId('send');
+  const status = byId('status');
+  const note = byId('note').value.trim();
+  if (!mood && !selectedSupport && !note) {
+    status.textContent = 'Pick a mood, choose what you need, or add a note first.';
     return;
   }
-  byId('status').textContent = 'Choose Kevor if prompted, then send when you’re ready.';
-  share(message);
+  button.disabled = true;
+  try {
+    const result = await inboxRequest('checkin',{mood:mood?.[1],support:selectedSupport?.[1],note});
+    if (!result.ok) throw Error('Check-in not confirmed');
+    status.textContent = 'Check-in sent to Kevor.';
+  } catch { status.textContent = 'The inbox is unavailable. Your check-in is still here. Try again later.'; }
+  finally { button.disabled = false; }
 };
+refreshReplies();
 const settings = byId('settings');
 byId('settingsButton').onclick = () => {
   byId('petName').value = preferences.name;
-  byId('phone').value = preferences.phone;
-  byId('phoneError').textContent = '';
   settings.showModal();
 };
 byId('close').onclick = () => settings.close();
 byId('preferences').onsubmit = event => {
   event.preventDefault();
-  const phone = byId('phone').value.replace(/[\s()+-]/g, '');
-  if (phone && !/^[1-9][0-9]{6,14}$/.test(phone)) {
-    byId('phoneError').textContent = 'Enter a valid number including the country code.';
-    byId('phone').focus();
-    return;
-  }
-  preferences = {name:byId('petName').value.trim() || defaults.name, phone};
+  preferences = {name:byId('petName').value.trim() || defaults.name};
   try { localStorage.setItem('pocket-checkin', JSON.stringify(preferences)); } catch {}
 
   react('is happy you’re here.');
