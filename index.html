@@ -53,11 +53,35 @@ article{box-shadow:0 6px 20px #8b4f9d12}
 .daily-note .petal-trim{margin-bottom:4px}
 #dailyCompliment{color:#603971;font-size:1.12rem;font-weight:750;margin:8px 0 4px}
 #dailyEncouragement{margin:0}
+
+@media(prefers-reduced-motion:no-preference){
+  @keyframes rise-in{0%{opacity:0;transform:translateY(22px) scale(.97)}72%{opacity:1;transform:translateY(-3px) scale(1.005)}100%{opacity:1;transform:none}}
+  @keyframes type-in{from{opacity:0;transform:translateY(.55em) rotate(-3deg)}to{opacity:1;transform:none}}
+  @keyframes tile-in{0%{opacity:0;transform:scale(.78)}72%{opacity:1;transform:scale(1.06)}100%{opacity:1;transform:none}}
+  @keyframes kitty-prance{0%,100%{transform:translateY(0) rotate(0)}22%{transform:translateY(-9px) rotate(-4deg)}47%{transform:translateY(0) rotate(2deg)}74%{transform:translateY(-6px) rotate(3deg)}}
+  @keyframes petals-pop{0%{opacity:0;transform:translate(-50%,4px) scale(.45)}23%{opacity:1}100%{opacity:0;transform:translate(-50%,-35px) scale(1.15) rotate(-8deg)}}
+  .hero{animation:rise-in .63s both}
+  .motion-line{display:inline-block;transform-origin:bottom left;animation:type-in .54s cubic-bezier(.2,.85,.35,1) both;animation-delay:.19s}
+  .motion-line+.motion-line{animation-delay:.29s}
+  .daily-note,.grid>article,.side>article{animation:rise-in .55s both;animation-delay:.24s}
+  .grid>article+article,.side>article{animation-delay:.34s}
+  .side>article+article{animation-delay:.43s}
+  .choices>button,.planner-item{animation:tile-in .38s cubic-bezier(.2,.72,.25,1) backwards}
+  .choices>button:nth-child(2){animation-delay:.05s}
+  .choices>button:nth-child(3){animation-delay:.10s}
+  .choices>button:nth-child(4){animation-delay:.15s}
+  .choices>button:nth-child(5){animation-delay:.20s}
+  .pet{position:relative}
+  .pet.pop{animation:kitty-prance .58s ease-in-out}
+  .pet.pop::after{content:'✿  ♥  ✧';position:absolute;top:7px;left:50%;width:max-content;color:#984979;font-size:21px;pointer-events:none;animation:petals-pop .72s ease-out both}
+  button,a{transition:background-color .16s,box-shadow .16s}
+  button:active:not(.pet){transform:scale(.97)}
+}
 </style>
 <main>
 <header><span class="brand"><span aria-hidden="true">✿</span> Pocket Short Cakes</span><nav aria-label="Main"><a href="./" aria-current="page">Check-in</a><a href="./study.html">Study planner</a></nav><button id="settingsButton" type="button">Settings</button></header>
 <section class="hero">
-<div><div class="petal-trim" aria-hidden="true">✿ ❀ ✿</div><h1>Hey, how are<br> you, really?</h1><p>A little space to check in, ask for what you need, or drop by to say hi.</p><button id="start" class="primary" type="button">Check in</button></div>
+<div><div class="petal-trim" aria-hidden="true">✿ ❀ ✿</div><h1><span class="motion-line">Hey, how are</span><br><span class="motion-line">you, really?</span></h1><p>A little space to check in, ask for what you need, or drop by to say hi.</p><button id="start" class="primary" type="button">Check in</button></div>
 <div class="pet-box"><button id="pet" class="pet" type="button" aria-label="Pet your pocket cat"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200" aria-hidden="true">
 <ellipse cx="118" cy="175" rx="74" ry="9" fill="#c693ce" opacity=".25"/>
 <path class="kitty-tail" d="M153 152c39 9 62-9 52-33-4-10-19-12-22-1" fill="none" stroke="#ae80d0" stroke-width="15" stroke-linecap="round"/>
