@@ -3,9 +3,11 @@ CREATE TABLE IF NOT EXISTS checkins (
   mood TEXT NOT NULL,
   support TEXT NOT NULL,
   note TEXT NOT NULL,
-  reply TEXT
+  reply TEXT,
+  browser_hash TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS checkins_browser ON checkins (browser_hash, id DESC);
 CREATE TABLE IF NOT EXISTS subscriptions (
-  id INTEGER PRIMARY KEY CHECK (id=1),
+  browser_hash TEXT PRIMARY KEY,
   endpoint TEXT NOT NULL
 );
