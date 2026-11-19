@@ -1,0 +1,18 @@
+{
+  "id": "./",
+  "name": "Pocket Check-in",
+  "short_name": "Check-in",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5efff",
+  "theme_color": "#f5efff",
+  "icons": [
+    {
+      "src": "frog-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
